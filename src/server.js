@@ -16,6 +16,7 @@ export function setupServer() {
       },
     }),
   );
+  // CORS middleware
   app.use(cors());
 
   app.get('/contacts', async (req, res) => {
