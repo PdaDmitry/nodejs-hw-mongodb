@@ -3,6 +3,7 @@ import {
   getAllContacts,
   getContactById,
   createContact,
+  deleteContact,
 } from '../services/contacts.js';
 
 export const getContactsController = async (_req, res) => {
@@ -33,7 +34,7 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
-export const createContactController = async (req, res, next) => {
+export const createContactController = async (req, res, _next) => {
   // const contactElem = {
   //   name: req.body.name,
   //   phoneNumber: req.body.phoneNumber,
@@ -50,4 +51,17 @@ export const createContactController = async (req, res, next) => {
     message: `Successfully created a student!`,
     data: contact,
   });
+};
+
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const contact = await deleteContact(contactId);
+
+  if (!contact) {
+    return next(createHttpError(404, 'Contact not found.'));
+    // throw createHttpError(404, 'Contact not found.');
+  }
+
+  res.status(204).send();
 };
