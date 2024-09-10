@@ -1,5 +1,9 @@
 import createHttpError from 'http-errors';
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import {
+  getAllContacts,
+  getContactById,
+  createContact,
+} from '../services/contacts.js';
 
 export const getContactsController = async (_req, res) => {
   const contacts = await getAllContacts();
@@ -27,4 +31,23 @@ export const getContactByIdController = async (req, res, next) => {
       },
     });
   }
+};
+
+export const createContactController = async (req, res, next) => {
+  // const contactElem = {
+  //   name: req.body.name,
+  //   phoneNumber: req.body.phoneNumber,
+  //   email: req.body.email,
+  //   isFavourite: req.body.isFavourite,
+  //   contactType: req.body.contactType,
+  // };
+  // const contact = await createContact(contactElem);
+
+  const contact = await createContact(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a student!`,
+    data: contact,
+  });
 };
