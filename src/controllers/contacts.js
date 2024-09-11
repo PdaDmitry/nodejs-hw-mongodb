@@ -4,6 +4,7 @@ import {
   getContactById,
   createContact,
   deleteContact,
+  updateContact,
 } from '../services/contacts.js';
 
 export const getContactsController = async (_req, res) => {
@@ -48,7 +49,7 @@ export const createContactController = async (req, res, _next) => {
 
   res.status(201).json({
     status: 201,
-    message: `Successfully created a student!`,
+    message: `Successfully created a contact!`,
     data: contact,
   });
 };
@@ -66,4 +67,18 @@ export const deleteContactController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const patchContactController = async (req, res) => {};
+export const patchContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const contact = await updateContact(contactId, req.body);
+
+  if (!contact) {
+    return next(createHttpError(404, 'Contact not found.'));
+  }
+
+  res.status(200).send({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: contact,
+  });
+};
