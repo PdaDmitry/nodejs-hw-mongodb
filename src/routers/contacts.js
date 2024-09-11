@@ -21,4 +21,6 @@ router.post('/contacts', jsonParser, ctrlWrapper(createContactController));
 
 router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
+router.patch('/contacts/:contactId', ctrlWrapper());
+
 export default router;
