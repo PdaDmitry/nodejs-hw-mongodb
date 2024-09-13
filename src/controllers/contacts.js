@@ -6,6 +6,7 @@ import {
   deleteContact,
   updateContact,
 } from '../services/contacts.js';
+import { contactSchemaValidation } from '../validation/contacts.js';
 
 export const getContactsController = async (_req, res) => {
   const contacts = await getAllContacts();
@@ -35,16 +36,7 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
-export const createContactController = async (req, res, _next) => {
-  // const contactElem = {
-  //   name: req.body.name,
-  //   phoneNumber: req.body.phoneNumber,
-  //   email: req.body.email,
-  //   isFavourite: req.body.isFavourite,
-  //   contactType: req.body.contactType,
-  // };
-  // const contact = await createContact(contactElem);
-
+export const createContactController = async (req, res, next) => {
   const contact = await createContact(req.body);
 
   res.status(201).json({

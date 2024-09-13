@@ -7,6 +7,8 @@ import {
   patchContactController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { contactSchemaValidation } from '../validation/contacts.js';
+import { validateBody } from '../middlewares/validateBody.js';
 
 const router = express.Router();
 const jsonParser = express.json({
@@ -18,7 +20,12 @@ router.get('/contacts', ctrlWrapper(getContactsController));
 
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 
-router.post('/contacts', jsonParser, ctrlWrapper(createContactController));
+router.post(
+  '/contacts',
+  jsonParser,
+  validateBody(contactSchemaValidation),
+  ctrlWrapper(createContactController),
+);
 
 router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
