@@ -42,19 +42,18 @@ export const contactUpdateSchemaValidation = Joi.object({
     'string.min': 'PhoneNumber should have at least {#limit} characters',
     'string.max': 'PhoneNumber should have at most {#limit} characters',
   }),
-  email: Joi.string().min(3).max(20).email().optional().messages({
+  email: Joi.string().min(3).max(20).email().messages({
     'string.base': 'Email should be a string',
     'string.min': 'Email should have at least {#limit} characters',
     'string.max': 'Email should have at most {#limit} characters',
-    'any.required': 'Email must be a valid email address',
+    'string.email': 'Email must be a valid email address',
   }),
-  isFavourite: Joi.boolean().optional(),
+  isFavourite: Joi.boolean(),
   contactType: Joi.string()
     .valid('work', 'home', 'personal')
     .default('personal')
     .messages({
       'string.base': 'Contact Type should be a string',
       'any.only': 'Contact Type must be one of {#valids}',
-      'any.required': 'Contact Type is required',
     }),
 });

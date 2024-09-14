@@ -7,7 +7,10 @@ import {
   patchContactController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { contactSchemaValidation } from '../validation/contacts.js';
+import {
+  contactSchemaValidation,
+  contactUpdateSchemaValidation,
+} from '../validation/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
 const router = express.Router();
@@ -32,6 +35,7 @@ router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 router.patch(
   '/contacts/:contactId',
   jsonParser,
+  validateBody(contactUpdateSchemaValidation),
   ctrlWrapper(patchContactController),
 );
 
