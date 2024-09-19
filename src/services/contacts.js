@@ -1,7 +1,17 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 
-export const getAllContacts = async () => {
-  const contacts = await ContactsCollection.find();
+export const getAllContacts = async ({ page, perPage }) => {
+  const limit = perPage;
+  //Skips a number of elements before starting to render to the current page
+  const skip = page > 0 ? (page - 1) * perPage : 0;
+
+  const contactsQuery = ContactsCollection.find();
+  const contactsCount = await ContactsCollection.find()
+    .merge(contactsQuery)
+    .countDocuments();
+
+  const contacts = contactsQuery.skip(skip).limit(limit).exec();
+
   return contacts;
 };
 
