@@ -1,7 +1,7 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllContacts = async ({ page, perPage }) => {
+export const getAllContacts = async ({ page, perPage, sortBy, sortOrder }) => {
   const limit = perPage;
   //Skips a number of elements before starting to render to the current page
   const skip = page > 0 ? (page - 1) * perPage : 0;
@@ -18,7 +18,11 @@ export const getAllContacts = async ({ page, perPage }) => {
   // so it only counts the number of documents on the current page(taking into account.skip() and.limit()).
   const [contactsCount, contacts] = await Promise.all([
     ContactsCollection.find().merge(contactsQuery).countDocuments(),
-    contactsQuery.skip(skip).limit(limit).exec(),
+    contactsQuery
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .exec(),
   ]);
 
   const paginationData = calculatePaginationData(contactsCount, page, perPage);
