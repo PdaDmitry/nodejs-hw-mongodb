@@ -7,10 +7,19 @@ export const getAllContacts = async ({ page, perPage }) => {
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
   const contactsQuery = ContactsCollection.find();
-  const contactsCount = await ContactsCollection.find()
-    .merge(contactsQuery)
-    .countDocuments();
-  const contacts = await contactsQuery.skip(skip).limit(limit).exec();
+  // const contactsCount = await ContactsCollection.find()
+  //   .merge(contactsQuery)
+  //   .countDocuments();
+  // const contacts = await contactsQuery.skip(skip).limit(limit).exec();
+
+  // due to the use of the contactsQuery parameter in both queries - the order is important!
+  // Because contactsQuery uses.skip() and.limit() to change the state of the request object!
+  // When countDocuments() is run in parallel, it receives a modified query (with pagination applied),
+  // so it only counts the number of documents on the current page(taking into account.skip() and.limit()).
+  const [contactsCount, contacts] = await Promise.all([
+    ContactsCollection.find().merge(contactsQuery).countDocuments(),
+    contactsQuery.skip(skip).limit(limit).exec(),
+  ]);
 
   const paginationData = calculatePaginationData(contactsCount, page, perPage);
 
