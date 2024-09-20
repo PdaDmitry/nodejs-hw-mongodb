@@ -1,5 +1,6 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import createHttpError from 'http-errors';
 
 export const getAllContacts = async ({
   page,
@@ -38,6 +39,10 @@ export const getAllContacts = async ({
   ]);
 
   const paginationData = calculatePaginationData(contactsCount, page, perPage);
+
+  if (page > paginationData.totalPages) {
+    throw createHttpError(404, 'Items not found');
+  }
 
   return {
     data: contacts,
