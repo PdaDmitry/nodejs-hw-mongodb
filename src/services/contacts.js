@@ -12,7 +12,7 @@ export const getAllContacts = async ({
   //Skips a number of elements before starting to render to the current page
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
-  console.log(filter);
+  // console.log(filter);
 
   const contactsQuery = ContactsCollection.find();
 
