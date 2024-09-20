@@ -1,16 +1,28 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllContacts = async ({ page, perPage, sortBy, sortOrder }) => {
+export const getAllContacts = async ({
+  page,
+  perPage,
+  sortBy,
+  sortOrder,
+  filter = {},
+}) => {
   const limit = perPage;
   //Skips a number of elements before starting to render to the current page
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
+  console.log(filter);
+
   const contactsQuery = ContactsCollection.find();
-  // const contactsCount = await ContactsCollection.find()
-  //   .merge(contactsQuery)
-  //   .countDocuments();
-  // const contacts = await contactsQuery.skip(skip).limit(limit).exec();
+
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
+  }
+
+  if (filter.isFavourite !== null) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
 
   // due to the use of the contactsQuery parameter in both queries - the order is important!
   // Because contactsQuery uses.skip() and.limit() to change the state of the request object!
