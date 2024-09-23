@@ -1,7 +1,7 @@
 import pino from 'pino-http';
 import express from 'express';
 import cors from 'cors';
-import contactsRouter from './routers/contacts.js'; //Since we export the router using export default, we can import it with any name
+import mainRouter from './routers/index.js'; //Since we export the router using export default, we can import it with any name
 import { env } from './utils/env.js';
 
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -24,7 +24,7 @@ export function setupServer() {
   // CORS middleware
   app.use(cors());
 
-  app.use(contactsRouter);
+  app.use(mainRouter);
 
   app.use(errorHandler);
 
