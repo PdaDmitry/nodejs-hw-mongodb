@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
 
-const userSchema = new Schema(
+const usersSchema = new Schema(
   {
-    name: { type: String, require: true },
-    email: { type: String, require: true, unique: true },
-    password: { type: String, require: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -12,10 +12,12 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.methods.toJSON = function () {
+//adding the toJSON method to the usersSchema ensures
+//that the password field is automatically removed
+usersSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
   return obj;
 };
 
-export const User = model('user', userSchema);
+export const User = model('users', usersSchema);

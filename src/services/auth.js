@@ -1,6 +1,12 @@
+import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import { User } from '../db/models/user.js';
 import createHttpError from 'http-errors';
+import {
+  ACCESS_TOKEN_FIFTEEN_MIN,
+  REFRESH_TOKEN_THIRTY_DAYS,
+} from '../constants/index.js';
+import { Session } from '../db/models/session.js';
 
 export const registerUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
@@ -21,4 +27,17 @@ export const loginUser = async (payload) => {
   const isEqual = await bcrypt.compare(payload.password, user.password); //Comparing password hashes
 
   if (!isEqual) throw createHttpError(401, 'Unauthorized');
+
+  await Session.deleteMany({ userId: user._id });
+
+  const accessToken = crypto.randomBytes(30).toString('base64');
+  const refreshToken = crypto.randomBytes(30).toString('base64');
+
+  return await Session.create({
+    userId: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_FIFTEEN_MIN),
+    refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_THIRTY_DAYS),
+  });
 };
