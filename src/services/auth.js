@@ -41,3 +41,7 @@ export const loginUser = async (payload) => {
     refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_THIRTY_DAYS),
   });
 };
+
+export const logoutUser = async (sessionId) => {
+  await Session.deleteOne({ _id: sessionId });
+};

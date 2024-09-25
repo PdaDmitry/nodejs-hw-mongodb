@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from '../services/auth.js';
+import { loginUser, logoutUser, registerUser } from '../services/auth.js';
 // import { REFRESH_TOKEN_THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
@@ -26,8 +26,6 @@ export const loginUserController = async (req, res) => {
     expires: session.refreshTokenValidUntil,
   });
 
-  // console.log({ session });
-
   res.json({
     status: 200,
     message: 'Successfully logged in an user!',
@@ -35,4 +33,17 @@ export const loginUserController = async (req, res) => {
       accessToken: session.accessToken,
     },
   });
+};
+
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  res.clearCookie('refreshToken');
+  res.clearCookie('sessionId');
+
+  // console.log(req.cookies);
+
+  res.status(204).send();
 };
