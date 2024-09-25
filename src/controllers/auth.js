@@ -1,4 +1,5 @@
 import { loginUser, registerUser } from '../services/auth.js';
+// import { REFRESH_TOKEN_THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -12,6 +13,18 @@ export const registerUserController = async (req, res) => {
 
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
+
+  //refreshToken is only accessible via HTTP requests and
+  //cannot be accessed via client - side JavaScript.
+  //It is valid for thirty days
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
 
   // console.log({ session });
 

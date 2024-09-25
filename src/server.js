@@ -1,5 +1,6 @@
 import pino from 'pino-http';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import mainRouter from './routers/index.js'; //Since we export the router using export default, we can import it with any name
 import { env } from './utils/env.js';
@@ -12,6 +13,7 @@ const PORT = Number(env('PORT', '3000'));
 
 export function setupServer() {
   const app = express();
+  app.use(cookieParser());
   // app.use(express.json());
 
   app.use(
