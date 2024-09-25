@@ -20,6 +20,19 @@ export const registerUser = async (payload) => {
   });
 };
 
+//Template for creating a new session
+const createSession = () => {
+  const accessToken = crypto.randomBytes(30).toString('base64');
+  const refreshToken = crypto.randomBytes(30).toString('base64');
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_FIFTEEN_MIN),
+    refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_THIRTY_DAYS),
+  };
+};
+
 export const loginUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
   if (!user) throw createHttpError(404, 'User not found');
@@ -28,20 +41,41 @@ export const loginUser = async (payload) => {
 
   if (!isEqual) throw createHttpError(401, 'Unauthorized');
 
-  await Session.deleteMany({ userId: user._id });
+  await Session.deleteOne({ userId: user._id });
 
-  const accessToken = crypto.randomBytes(30).toString('base64');
-  const refreshToken = crypto.randomBytes(30).toString('base64');
+  const newSession = createSession();
 
   return await Session.create({
     userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_FIFTEEN_MIN),
-    refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_THIRTY_DAYS),
+    ...newSession,
   });
 };
 
 export const logoutUser = async (sessionId) => {
   await Session.deleteOne({ _id: sessionId });
+};
+
+export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+  const session = await Session.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) throw createHttpError(401, 'Session not found');
+
+  const isSessionTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+
+  if (isSessionTokenExpired) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  const newSession = createSession();
+
+  await Session.deleteOne({ _id: sessionId, refreshToken });
+
+  return await Session.create({
+    userId: session.userId,
+    ...newSession,
+  });
 };
