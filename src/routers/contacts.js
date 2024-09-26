@@ -13,23 +13,28 @@ import {
 } from '../validation/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = express.Router();
+// router.use(authenticate); We add it individually for each route because
+//the auth and contacts routes are connected globally via the mainRouter!!!!!!!
 const jsonParser = express.json({
   type: ['application/json', 'application/vnd.api+json'],
   limit: '100kb',
 });
 
-router.get('/contacts', ctrlWrapper(getContactsController));
+router.get('/contacts', authenticate, ctrlWrapper(getContactsController));
 
 router.get(
   '/contacts/:contactId',
+  authenticate,
   isValidId,
   ctrlWrapper(getContactByIdController),
 );
 
 router.post(
   '/contacts',
+  authenticate,
   jsonParser,
   validateBody(contactSchemaValidation),
   ctrlWrapper(createContactController),
@@ -37,12 +42,14 @@ router.post(
 
 router.delete(
   '/contacts/:contactId',
+  authenticate,
   isValidId,
   ctrlWrapper(deleteContactController),
 );
 
 router.patch(
   '/contacts/:contactId',
+  authenticate,
   isValidId,
   jsonParser,
   validateBody(contactUpdateSchemaValidation),
