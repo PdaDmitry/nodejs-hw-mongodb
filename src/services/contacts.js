@@ -7,7 +7,8 @@ export const getAllContacts = async ({
   perPage,
   sortBy,
   sortOrder,
-  filter = {},
+  filter,
+  userId, //for authorization
 }) => {
   const limit = perPage;
   //Skips a number of elements before starting to render to the current page
@@ -24,6 +25,8 @@ export const getAllContacts = async ({
   if (filter.isFavourite !== null) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
+
+  contactsQuery.where('userId').equals(userId); //for authorization
 
   // due to the use of the contactsQuery parameter in both queries - the order is important!
   // Because contactsQuery uses.skip() and.limit() to change the state of the request object!
@@ -50,8 +53,8 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
+export const getContactById = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOne({ _id: contactId, userId });
   return contact;
 };
 
@@ -60,14 +63,17 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await ContactsCollection.findByIdAndDelete(contactId);
+export const deleteContact = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
   return contact;
 };
 
-export const updateContact = async (contactId, payload) => {
-  const contact = await ContactsCollection.findByIdAndUpdate(
-    contactId,
+export const updateContact = async (contactId, payload, userId) => {
+  const contact = await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId },
     payload,
     { new: true },
   );

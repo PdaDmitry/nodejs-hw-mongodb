@@ -24,6 +24,13 @@ const contactSchema = new Schema(
       enum: ['work', 'home', 'personal'],
       default: 'personal',
     },
+    //Additional field for authorization
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      ref: 'users',
+      required: true,
+    },
   },
   {
     timestamps: true,
