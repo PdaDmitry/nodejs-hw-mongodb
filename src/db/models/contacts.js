@@ -27,7 +27,7 @@ const contactSchema = new Schema(
     //Additional field for authorization
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      // ref: 'User',
       ref: 'users',
       required: true,
     },
