@@ -5,8 +5,12 @@ import createHttpError from 'http-errors';
 import {
   ACCESS_TOKEN_FIFTEEN_MIN,
   REFRESH_TOKEN_THIRTY_DAYS,
+  SMTP,
 } from '../constants/index.js';
 import { Session } from '../db/models/session.js';
+import { sendEmail } from '../utils/sendMail.js';
+
+import { env } from '../utils/env.js';
 
 export const registerUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
@@ -83,4 +87,11 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 export const sendResetEmail = async (email) => {
   const user = await User.findOne({ email });
   if (!user) throw createHttpError(404, 'User not found!');
+
+  sendEmail({
+    from: env(SMTP.FROM),
+    to: email,
+    subject: 'Reset your password', //Title of the message that arrives in the mail
+    html: `<p>To reset your password click <a href="https://www.google.com">here</a> !</p>`, //${resetToken}
+  });
 };
