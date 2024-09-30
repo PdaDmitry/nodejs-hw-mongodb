@@ -33,4 +33,6 @@ router.post('/auth/logout', ctrlWrapper(logoutUserController));
 
 router.post('/auth/refresh', ctrlWrapper(refreshUserSessionController));
 
+router.post('/auth/send-reset-email', ctrlWrapper());
+
 export default router; //authRouter
