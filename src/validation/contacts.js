@@ -13,7 +13,7 @@ export const contactSchemaValidation = Joi.object({
     'string.max': 'PhoneNumber should have at most {#limit} characters',
     'any.required': 'PhoneNumber is required',
   }),
-  email: Joi.string().min(3).max(20).email().optional().messages({
+  email: Joi.string().min(3).max(30).email().optional().messages({
     'string.base': 'Email should be a string',
     'string.min': 'Email should have at least {#limit} characters',
     'string.max': 'Email should have at most {#limit} characters',

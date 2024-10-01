@@ -152,4 +152,6 @@ export const resetPwd = async (payload) => {
   const newEncryptedPassword = await bcrypt.hash(payload.password, 10);
 
   await User.updateOne({ _id: user._id }, { password: newEncryptedPassword });
+
+  await Session.deleteOne({ userId: user._id });
 };
