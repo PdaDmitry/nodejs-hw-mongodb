@@ -100,7 +100,7 @@ export const sendResetEmail = async (email) => {
     },
     env('JWT_SECRET'),
     {
-      expiresIn: '5m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
+      expiresIn: '15m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
     },
   );
   // console.log({ resetToken });
@@ -131,4 +131,25 @@ export const sendResetEmail = async (email) => {
       'Failed to send the email, please try again later.',
     );
   }
+};
+
+export const resetPwd = async (payload) => {
+  let jWToken;
+
+  try {
+    jWToken = jwt.verify(payload.token, env('JWT_SECRET')); //token verification
+  } catch (error) {
+    throw createHttpError(401, 'Token is expired or invalid.');
+  }
+
+  const user = await User.findOne({
+    email: jWToken.email,
+    _id: jWToken.sub,
+  });
+
+  if (!user) throw createHttpError(404, 'User not found!');
+
+  const newEncryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await User.updateOne({ _id: user._id }, { password: newEncryptedPassword });
 };
