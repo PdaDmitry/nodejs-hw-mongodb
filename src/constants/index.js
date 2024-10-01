@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
@@ -13,3 +15,7 @@ export const SMTP = {
   PASSWORD: 'SMTP_PASSWORD',
   FROM: 'SMTP_FROM',
 };
+
+export const TEMPLATE_DIR = path.resolve('src', 'templates'); //path.resolve() creates an absolute path to the current working directory
+//Practically does the same thing
+// export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates'); //path.join() simply separates path segments while handling directory separators.

@@ -1,11 +1,16 @@
+import path from 'node:path';
 import crypto from 'node:crypto';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import handlebars from 'handlebars';
+import fs from 'node:fs/promises';
 import { User } from '../db/models/user.js';
 import createHttpError from 'http-errors';
 import {
   ACCESS_TOKEN_FIFTEEN_MIN,
   REFRESH_TOKEN_THIRTY_DAYS,
   SMTP,
+  TEMPLATE_DIR,
 } from '../constants/index.js';
 import { Session } from '../db/models/session.js';
 import { sendEmail } from '../utils/sendMail.js';
@@ -88,10 +93,42 @@ export const sendResetEmail = async (email) => {
   const user = await User.findOne({ email });
   if (!user) throw createHttpError(404, 'User not found!');
 
-  sendEmail({
-    from: env(SMTP.FROM),
-    to: email,
-    subject: 'Reset your password', //Title of the message that arrives in the mail
-    html: `<p>To reset your password click <a href="https://www.google.com">here</a> !</p>`, //${resetToken}
+  const resetToken = jwt.sign(
+    {
+      sub: user._id, //identification
+      email: user.email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
+    },
+  );
+  // console.log({ resetToken });
+
+  const templateFilePath = path.join(TEMPLATE_DIR, 'reset-password-email.html');
+
+  const templateSource = (await fs.readFile(templateFilePath)).toString(); //{encoding:"utf-8"}
+
+  const template = handlebars.compile(templateSource); //Compiling the HTML file "reset-password-email.html"
+
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
+
+  try {
+    await sendEmail({
+      from: env(SMTP.FROM),
+      to: email,
+      subject: 'Reset your password', //Title of the message that arrives in the mail
+      html,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
 };
