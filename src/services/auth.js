@@ -100,7 +100,7 @@ export const sendResetEmail = async (email) => {
     },
     env('JWT_SECRET'),
     {
-      expiresIn: '15m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
+      expiresIn: '5m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
     },
   );
   // console.log({ resetToken });
