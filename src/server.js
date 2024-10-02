@@ -17,6 +17,9 @@ export function setupServer() {
   app.use(cookieParser());
   // app.use(express.json()); //used individually where required
 
+  //If a request comes for a static file (with any extension),
+  //look for it in the folder at the specified path UPLOAD_DIR.
+  //And if there is such a file, give it away!
   app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(
