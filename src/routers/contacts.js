@@ -14,6 +14,7 @@ import {
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = express.Router();
 // router.use(authenticate); We add it individually for each route because
@@ -35,6 +36,7 @@ router.get(
 router.post(
   '/contacts',
   authenticate,
+  upload.single('photo'),
   jsonParser,
   validateBody(contactSchemaValidation),
   ctrlWrapper(createContactController),
@@ -50,6 +52,7 @@ router.delete(
 router.patch(
   '/contacts/:contactId',
   authenticate,
+  upload.single('photo'),
   isValidId,
   jsonParser,
   validateBody(contactUpdateSchemaValidation),

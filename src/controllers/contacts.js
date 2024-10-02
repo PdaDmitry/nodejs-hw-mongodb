@@ -9,6 +9,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -50,8 +51,17 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, _next) => {
-  //Add a userId field for authorization
+  // Add a userId field for authorization
   const contact = await createContact({ ...req.body, userId: req.user._id }); //req.user._id for authorization
+
+  // console.log(req.file); req.files - if an array of files
+
+  const photo = req.file;
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
 
   res.status(201).json({
     status: 201,
@@ -75,6 +85,7 @@ export const deleteContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
+  const photo = req.file;
 
   const contact = await updateContact(contactId, req.body, req.user._id); //req.user._id for authorization
 
