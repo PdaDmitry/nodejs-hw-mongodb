@@ -29,6 +29,7 @@ export const contactSchemaValidation = Joi.object({
       'any.only': 'Contact Type must be one of {#valids}',
       'any.required': 'Contact Type is required',
     }),
+  photo: Joi.string().optional(),
 });
 
 export const contactUpdateSchemaValidation = Joi.object({
@@ -56,4 +57,5 @@ export const contactUpdateSchemaValidation = Joi.object({
       'string.base': 'Contact Type should be a string',
       'any.only': 'Contact Type must be one of {#valids}',
     }),
+  photo: Joi.string().optional(),
 });

@@ -51,9 +51,6 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, _next) => {
-  // Add a userId field for authorization
-  const contact = await createContact({ ...req.body, userId: req.user._id }); //req.user._id for authorization
-
   // console.log(req.file); req.files - if an array of files
 
   const photo = req.file;
@@ -62,6 +59,14 @@ export const createContactController = async (req, res, _next) => {
   if (photo) {
     photoUrl = await saveFileToUploadDir(photo);
   }
+
+  // Add a userId field for authorization
+  const contact = await createContact({
+    ...req.body,
+    userId: req.user._id,
+    photo: photoUrl,
+  });
+  // console.log(contact);
 
   res.status(201).json({
     status: 201,
@@ -77,7 +82,6 @@ export const deleteContactController = async (req, res, next) => {
 
   if (!contact) {
     return next(createHttpError(404, 'Contact not found.'));
-    // throw createHttpError(404, 'Contact not found.');
   }
 
   res.status(204).send();
@@ -87,10 +91,24 @@ export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const photo = req.file;
 
-  const contact = await updateContact(contactId, req.body, req.user._id); //req.user._id for authorization
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
+  const contact = await updateContact(
+    contactId,
+    {
+      ...req.body,
+      photo: photoUrl,
+    },
+    req.user._id,
+  );
 
   if (!contact) {
-    return next(createHttpError(404, 'Contact not found.'));
+    next(createHttpError(404, 'Contact not found'));
+    return;
   }
 
   res.status(200).send({
