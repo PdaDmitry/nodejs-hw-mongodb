@@ -13,6 +13,16 @@ import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { env } from '../utils/env.js';
 
+export const photoUploadTo = async (photo) => {
+  if (!photo) return null;
+
+  if (env('ENABLE_CLOUDINARY') === 'true') {
+    return await saveFileToCloudinary(photo);
+  } else {
+    return await saveFileToUploadDir(photo);
+  }
+};
+
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -56,15 +66,15 @@ export const createContactController = async (req, res, _next) => {
   // console.log(req.file); req.files - if an array of files
 
   const photo = req.file;
-  let photoUrl;
+  let photoUrl = await photoUploadTo(photo);
 
-  if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo, 'photos');
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
-    }
-  }
+  // if (photo) {
+  //   if (env('ENABLE_CLOUDINARY') === 'true') {
+  //     photoUrl = await saveFileToCloudinary(photo, 'photos');
+  //   } else {
+  //     photoUrl = await saveFileToUploadDir(photo);
+  //   }
+  // }
 
   // Add a userId field for authorization
   const contact = await createContact({
@@ -97,15 +107,15 @@ export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const photo = req.file;
 
-  let photoUrl;
+  let photoUrl = await photoUploadTo(photo);
 
-  if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo, 'photos');
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
-    }
-  }
+  // if (photo) {
+  //   if (env('ENABLE_CLOUDINARY') === 'true') {
+  //     photoUrl = await saveFileToCloudinary(photo, 'photos');
+  //   } else {
+  //     photoUrl = await saveFileToUploadDir(photo);
+  //   }
+  // }
 
   const contact = await updateContact(
     contactId,
