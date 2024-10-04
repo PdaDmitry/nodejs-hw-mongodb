@@ -10,16 +10,9 @@ cloudinary.config({
   api_secret: env(CLOUDINARY.API_SECRET),
 });
 
-// export const saveFileToCloudinary = async (file) => {
-//   const response = await cloudinary.uploader.upload(file.path);
-//   await fs.unlink(file.path);
-
-//   return response.secure_url;
-// };
-
 export const saveFileToCloudinary = async (file, folder) => {
   const response = await cloudinary.uploader.upload(file.path, { folder });
-  await fs.unlink(file.path);
+  await fs.unlink(file.path); //used to delete a local file after it has been successfully uploaded to Cloudinary
 
   return response.secure_url;
 };

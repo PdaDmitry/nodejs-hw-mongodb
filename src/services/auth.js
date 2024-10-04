@@ -100,7 +100,7 @@ export const sendResetEmail = async (email) => {
     },
     env('JWT_SECRET'),
     {
-      expiresIn: '5m', //Password reset expiration date!!!!!!!!!!!!!!!!!!!
+      expiresIn: '5m', //Password reset expiration date!!!!!!!
     },
   );
   // console.log({ resetToken });
@@ -139,6 +139,7 @@ export const resetPwd = async (payload) => {
   try {
     jWToken = jwt.verify(payload.token, env('JWT_SECRET')); //token verification
   } catch (error) {
+    console.log(error);
     throw createHttpError(401, 'Token is expired or invalid.');
   }
 

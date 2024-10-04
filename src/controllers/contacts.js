@@ -17,7 +17,7 @@ export const photoUploadTo = async (photo) => {
   if (!photo) return null;
 
   if (env('ENABLE_CLOUDINARY') === 'true') {
-    return await saveFileToCloudinary(photo);
+    return await saveFileToCloudinary(photo, 'photos');
   } else {
     return await saveFileToUploadDir(photo);
   }
@@ -49,7 +49,6 @@ export const getContactByIdController = async (req, res, next) => {
   const contact = await getContactById(contactId, req.user._id); //req.user._id for authorization
 
   if (!contact) {
-    // throw createHttpError(404, 'Contact not found.');
     return next(createHttpError(404, 'Contact not found.'));
   } else {
     res.status(200).json({
@@ -68,21 +67,12 @@ export const createContactController = async (req, res, _next) => {
   const photo = req.file;
   let photoUrl = await photoUploadTo(photo);
 
-  // if (photo) {
-  //   if (env('ENABLE_CLOUDINARY') === 'true') {
-  //     photoUrl = await saveFileToCloudinary(photo, 'photos');
-  //   } else {
-  //     photoUrl = await saveFileToUploadDir(photo);
-  //   }
-  // }
-
   // Add a userId field for authorization
   const contact = await createContact({
     ...req.body,
     userId: req.user._id,
     photo: photoUrl,
   });
-  // console.log(contact);
 
   res.status(201).json({
     status: 201,
@@ -108,14 +98,6 @@ export const patchContactController = async (req, res, next) => {
   const photo = req.file;
 
   let photoUrl = await photoUploadTo(photo);
-
-  // if (photo) {
-  //   if (env('ENABLE_CLOUDINARY') === 'true') {
-  //     photoUrl = await saveFileToCloudinary(photo, 'photos');
-  //   } else {
-  //     photoUrl = await saveFileToUploadDir(photo);
-  //   }
-  // }
 
   const contact = await updateContact(
     contactId,
