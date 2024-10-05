@@ -16,6 +16,10 @@ import { Session } from '../db/models/session.js';
 import { sendEmail } from '../utils/sendMail.js';
 
 import { env } from '../utils/env.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 export const registerUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
@@ -155,4 +159,29 @@ export const resetPwd = async (payload) => {
   await User.updateOne({ _id: user._id }, { password: newEncryptedPassword });
 
   await Session.deleteOne({ userId: user._id });
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401, 'Unauthorized');
+
+  let user = await User.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(crypto.randomBytes(10), 10);
+    user = await User.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  } else {
+    await Session.deleteOne({ userId: user._id });
+  }
+
+  const newSession = createSession();
+
+  return await Session.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
