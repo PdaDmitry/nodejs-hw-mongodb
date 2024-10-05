@@ -7,6 +7,7 @@ import {
   sendResetEmailSchema,
 } from '../validation/auth.js';
 import {
+  getGoogleOAuthUrlController,
   loginUserController,
   logoutUserController,
   refreshUserSessionController,
@@ -53,5 +54,7 @@ router.post(
   validateBody(resetPwdSchema),
   ctrlWrapper(resetPwdController),
 );
+
+router.get('/auth/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
 
 export default router; //authRouter

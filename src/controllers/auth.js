@@ -6,7 +6,7 @@ import {
   resetPwd,
   sendResetEmail,
 } from '../services/auth.js';
-// import { REFRESH_TOKEN_THIRTY_DAYS } from '../constants/index.js';
+import '../utils/googleOAuth2.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -92,4 +92,8 @@ export const resetPwdController = async (req, res) => {
     message: 'Password has been successfully reset.',
     data: {},
   });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  res.send('Get OAuth URL!');
 };
