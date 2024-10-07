@@ -1,12 +1,12 @@
 type: object
 required:
-  - _id
+  # - _id
   - name
   - phoneNumber
   - contactType
-  - userId
-  - createdAt
-  - updatedAt
+  # - userId
+  # - createdAt
+  # - updatedAt
 properties:
   _id:
     description: "Contact's id"

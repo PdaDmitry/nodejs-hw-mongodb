@@ -100,13 +100,10 @@
       "contact": {
         "type": "object",
         "required": [
-          "_id",
           "name",
           "phoneNumber",
           "contactType",
-          "userId",
-          "createdAt",
-          "updatedAt"
+          "userId"
         ],
         "properties": {
           "_id": {
@@ -173,7 +170,7 @@
     },
     "responses": {
       "404": {
-        "description": "Contact not found.",
+        "description": "Not found error",
         "content": {
           "aplication/json": {
             "schema": {
