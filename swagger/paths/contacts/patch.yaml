@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Update contact by id
 operationId: updateContact
-description: 'Update contact by id. At least one field (name, email, or phone) must be provided for the update.'
+description: 'Update contact by ID. To update, you must specify at least one field.'
 security:
   - bearerAuth: []
 parameters:
@@ -22,14 +22,25 @@ requestBody:
             type: string
             description: "Contact's name"
             example: 'John Doe'
+          phoneNumber:
+            type: string
+            description: "Contact's phone number"
+            example: '+380950000000'
           email:
             type: string
             description: "Contact's email"
             example: 'johndoe@example.com'
-          phone:
+          isFavourite:
+            description: 'Contact is favorites or not'
+            type: boolean
+            example: false
+            default: false
+          contactType:
+            description: "Contact's type"
             type: string
-            description: "Contact's phone number"
-            example: '+380950000000'
+            enum: ['work', 'home', 'personal']
+            example: home
+            default: personal
           photo:
             description: "Link to contact's photo"
             type: string

@@ -5,10 +5,10 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: This is a documentation of contact database
+  description: This is the contact database documentation.
 tags:
   - name: Contacts
-    description: Operations about contacts.
+    description: Operations with contacts.
   - name: Auth
     description: Auth operations.
 servers:

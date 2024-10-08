@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "This is a documentation of contact database"
+    "description": "This is the contact database documentation."
   },
   "servers": [
     {
@@ -20,7 +20,7 @@
   "tags": [
     {
       "name": "Contacts",
-      "description": "Operations about contacts."
+      "description": "Operations with contacts."
     },
     {
       "name": "Auth",
@@ -523,8 +523,8 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
+          "409": {
+            "$ref": "#/components/responses/409"
           }
         }
       }
@@ -712,6 +712,43 @@
                     "message": {
                       "type": "string",
                       "example": "Contact not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "Conflict error",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "ConflictError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email in use"
                     }
                   }
                 }
