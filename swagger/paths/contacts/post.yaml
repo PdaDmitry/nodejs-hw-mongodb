@@ -52,3 +52,55 @@ responses:
               $ref: '../../components/schemas/contact.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
+#   tags:
+#   - Auth
+# summary: Register a user
+# operationId: rgisterUser
+# description: 'Register a new user with payload'
+# security: []
+# requestBody:
+#   content:
+#     application/json:
+#       schema:
+#         type: object
+#         required:
+#           - name
+#           - email
+#           - password
+#         properties:
+#           name:
+#             description: "User's name"
+#             type: string
+#             example: 'John Doe'
+#           email:
+#             description: "User's email"
+#             type: string
+#             example: john_doe@gmail.com
+#           password:
+#             description: "User's password"
+#             type: string
+#             format: password
+#             example: '1234567890'
+# responses:
+#   '201':
+#     description: Register a user
+#     content:
+#       application/json:
+#         schema:
+#           type: object
+#           required:
+#             - status
+#             - message
+#             - data
+#           properties:
+#             status:
+#               type: integer
+#               example: 201
+#             message:
+#               type: string
+#               example: 'Successfully registered a user!'
+#             data:
+#               type: object
+#               $ref: '../../components/schemas/user.yaml'
+#   '401':
+#     $ref: '../../components/responses/401.yaml'
