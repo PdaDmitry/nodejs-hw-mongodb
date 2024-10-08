@@ -469,7 +469,7 @@
         }
       }
     },
-    "/auth": {
+    "/auth/register": {
       "post": {
         "tags": [
           "Auth"
