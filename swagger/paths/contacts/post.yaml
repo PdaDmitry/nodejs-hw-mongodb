@@ -33,7 +33,7 @@ responses:
   '201':
     description: Create a contact
     content:
-      aplicatio/json:
+      application/json:
         schema:
           type: object
           required:
@@ -51,4 +51,4 @@ responses:
               type: object
               $ref: '../../components/schemas/contact.yaml'
   '401':
-    $ref: ..\..\components\responses\401.yaml
+    $ref: '../../components/responses/401.yaml'
