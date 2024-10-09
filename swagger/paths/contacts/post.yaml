@@ -23,6 +23,15 @@ requestBody:
             description: "Contact's phone number"
             type: string
             example: '+380950000000'
+          email:
+            description: "Contact's email"
+            type: string
+            example: john_doe@gmail.com
+          isFavourite:
+            description: 'Contact is favorites or not'
+            type: boolean
+            example: false
+            default: false
           contactType:
             description: "Contact's type"
             type: string
