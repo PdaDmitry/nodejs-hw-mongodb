@@ -13,7 +13,7 @@ tags:
     description: Auth operations.
 servers:
   - url: http://127.0.0.1:3000
-  - url: https://nodejs-hw7-swagger-mongodb.onrender.com
+  - url: https://github.com/PdaDmitry/nodejs-hw-mongodb/tree/hw7-swagger
 paths:
   /contacts:
     get:
